@@ -21,8 +21,8 @@ int main(int argc, char **argv, char **env)
 	while (1)
 	{
 		if (isatty(STDIN_FILENO))
-			
-			write(STDOUT_FILENO, str ,len);
+
+			write(STDOUT_FILENO, str, len);
 
 		line = _getline();
 
