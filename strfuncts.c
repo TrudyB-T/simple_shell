@@ -61,3 +61,63 @@ char *_strconcat(char *s1, char *s2)
 
 	return (New);
 }
+
+
+
+/**
+ * _atoi - converts string to integer
+ * @s : pointer to be converted
+ * Return: integer or 0 if
+ * there are no numbers in the string
+ */
+
+int _atoi(char *s)
+{
+	int k = 0;
+	unsigned int l = 0;
+	int j = 0;
+	int m = 1;
+
+	while (s[k])
+	{
+		if (s[k] == 45)
+		{
+			m *= -1;
+		}
+		while (s[k] >= 48 && s[k] <= 57)
+		{
+			j = 1;
+			l = (l * 10) + (s[k] - '0');
+			k++;
+		}
+		if (j == 1)
+		{
+			break;
+		}
+		k++;
+	}
+	l *= m;
+	return (l);
+}
+
+
+
+/**
+ *  _strcmp - compares two strings
+ *
+ * @s1 :the pointer to the first string to be compared
+ *
+ * @s2 :the pointer to the second string to be compared
+ *
+ * Return: the difference between *s1 and *s2
+ */
+
+int _strcmp(char *s1, char *s2)
+{
+	while (*s1 && *s2 && *s1 == *s2)
+	{
+		s1++;
+		s2++;
+	}
+	return (*s1 - *s2);
+}
