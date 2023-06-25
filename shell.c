@@ -4,10 +4,10 @@
  * main - a simple shell interpreter
  * @argc: argument count
  * @argv: argument vector
+ * @env: environment
  * Return: 0 means success
  */
-
-int main (int argc, char **argv, char **env)
+int main(int argc, char **argv, char **env)
 {
 	char *str = (":)trukel$ ");
 	char *line = NULL;
@@ -26,8 +26,8 @@ int main (int argc, char **argv, char **env)
 
 		line = _getline();
 
-	
 		argv = tokenize(line, bufsize);
+
 		if (argv == NULL || argv[0] == NULL)
 		{
 			execute(argv);
@@ -40,8 +40,6 @@ int main (int argc, char **argv, char **env)
 			}
 			execute(argv);
 		}
-
-
 	}
-	return(0);
+	return (0);
 }
