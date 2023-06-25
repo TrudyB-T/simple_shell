@@ -1,9 +1,10 @@
 #include "prototypes.h"
 
 /**
+ * search_builtin - searches for builtins
+ * @argv: the string to be used
+ * Return: on success >=1, on failure -1
  */
-
-
 int search_builtin(char *argv)
 {
 	int k = 0;
@@ -17,17 +18,17 @@ int search_builtin(char *argv)
 	while (k < 4)
 	{
 		if (_strcmp(argv, cmd[k]) == 0)
-			return(k + 1);
-
+			return (k + 1);
 		k++;
 	}
 	return (-1);
 }
 
-
 /**
+ * exec_builtins - execute builtins
+ * @argv: string to be used
+ * @i: index
  */
-
 void exec_builtins(char **argv, int k)
 {
 	switch (k)
@@ -35,6 +36,10 @@ void exec_builtins(char **argv, int k)
 		case 1:
 			_exit_(argv);
 			break;
+		case 4:
+			_printenv();
+			break;
+
 		default:
 			break;
 	}
