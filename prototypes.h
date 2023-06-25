@@ -25,5 +25,9 @@ void *reallocate(void *str, unsigned int size1, unsigned int size2);
 char *locate_command(char *argv);
 char *_searchenv(char *env);
 char *_strconcat(char *s1, char *s2);
-
+int search_builtin(char *argv);
+void exec_builtins(char **argv, int k);
+void _exit_(char **argv);
+int _atoi(char *s);
+int _strcmp(char *s1, char *s2);
 #endif
