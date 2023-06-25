@@ -13,6 +13,7 @@ int main(int argc, char **argv, char **env)
 	char *line = NULL;
 	int len = _strlen(str);
 	int bufsize = BUFFER_LEN;
+	int k;
 	struct stat fileinfo;
 	(void) argc;
 	(void) env;
@@ -34,12 +35,21 @@ int main(int argc, char **argv, char **env)
 		}
 		else
 		{
-			if (stat(argv[0], &fileinfo) != 0)
+			k = search_builtin(argv[0]);
+
+			if (k >= 0)
+				exec_builtins(argv, k);
+
+			else
 			{
-				argv[0] = locate_command(argv[0]);
+				if (stat(argv[0], &fileinfo) != 0)
+				{
+					argv[0] = locate_command(argv[0]);
+				}
+				execute(argv);
 			}
-			execute(argv);
 		}
+		free(argv);
 	}
 	return (0);
 }
