@@ -9,15 +9,11 @@
  */
 int main(int argc, char **argv, char **env)
 {
-	char *str = (":)trukel$ ");
-	char *line = NULL;
-	int len = _strlen(str);
-	int bufsize = BUFFER_LEN;
-	int k;
+	char *str = (":)trukel$ "), *line = NULL;
+	int len = _strlen(str), k, bufsize = BUFFER_LEN;
 	struct stat fileinfo;
 	(void) argc;
 	(void) env;
-
 
 	while (1)
 	{
@@ -43,9 +39,7 @@ int main(int argc, char **argv, char **env)
 			else
 			{
 				if (stat(argv[0], &fileinfo) != 0)
-				{
 					argv[0] = locate_command(argv[0]);
-				}
 				execute(argv);
 			}
 		}
