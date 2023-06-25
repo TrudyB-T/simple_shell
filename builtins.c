@@ -25,9 +25,9 @@ int search_builtin(char *argv)
 }
 
 /**
- * exec_builtins - execute builtins
- * @argv: string to be used
- * @i: index
+ * exec_builtins - execute builtin functions
+ * @argv: argument vector
+ * @k: index
  */
 void exec_builtins(char **argv, int k)
 {
