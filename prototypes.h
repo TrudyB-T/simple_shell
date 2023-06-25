@@ -30,4 +30,5 @@ void exec_builtins(char **argv, int k);
 void _exit_(char **argv);
 int _atoi(char *s);
 int _strcmp(char *s1, char *s2);
+void _printenv(void);
 #endif
