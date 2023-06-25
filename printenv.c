@@ -1,13 +1,16 @@
 #include "prototypes.h"
 
 /**
+ * _printenv - prints environment variable
+ *
+ * Return: nothing
  */
 void _printenv(void)
 {
 	char *env = *environ;
 	int len1, len2;
 
-	for(len1 = 1; env != NULL; len1++)
+	for (len1 = 1; env != NULL; len1++)
 	{
 		len2 = 0;
 		while (env[len2])
