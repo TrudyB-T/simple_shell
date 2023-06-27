@@ -121,3 +121,22 @@ int _strcmp(char *s1, char *s2)
 	}
 	return (*s1 - *s2);
 }
+
+/**
+ * *_strcpy - copies the string pointedto by src
+ * @dest: buffer pointed to by dest
+ * @src: string pointed to by src
+ * Return: the pointer to dest
+ */
+char *_strcpy(char *dest, char *src)
+{
+	char *s = dest;
+	int i;
+
+	for (i = 0; src[i] != '\0'; i++)
+	{
+		dest[i] = src[i];
+	}
+	dest[i] = ('\0');
+	return (s);
+}
