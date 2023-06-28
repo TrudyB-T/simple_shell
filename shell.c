@@ -1,60 +1,122 @@
 #include "prototypes.h"
 
 /**
- * main - run a simple shell interpreter
- * Return: 0 means success
+ * sig_handler - function Prints a new
+ * prompt upon a signal is recieved
+ * @sig: signal received from user
+ *
+ * Return: void
  */
-int main(void)
+void sig_handler(int sig)
 {
-	char *str = (":)trukel$ "), *lineptr = NULL, *line, **argv;
-	int len = _strlen(str), k, bufsize = BUFFER_LEN;
-	ssize_t num;
-	size_t s = 0;
-	struct stat fileinfo;
+	char *new_prompt = "\n:)trukel$ ";
 
-	while (1)
+	(void)sig;
+	signal(SIGINT, sig_handler);
+	write(STDIN_FILENO, new_prompt, 11);
+}
+
+int execute(char **args, char **front)
+{
+	pid_t child_pid;
+	int status, flag = 0, ret = 0;
+	char *command = args[0];
+
+	if (command[0] != '/' && command[0] != '.')
 	{
-		if (isatty(STDIN_FILENO) == 1)
+		flag = 1;
+		command = get_location(command);
+	}
 
-			write(STDOUT_FILENO, str, len);
-
-		num = _getline(&lineptr, &s, stdin);
-		if (num == -1)
+	if (!command || (access(command, F_OK) == -1))
+	{
+		if (errno == EACCES)
+			ret = (create_error(args, 126));
+		else
+			ret = (create_error(args, 127));
+	}
+	else
+	{
+		child_pid = fork();
+		if (child_pid == -1)
 		{
-			exit(-1);
+			if (flag)
+				free(command);
+			perror("Error child:");
+			return (1);
 		}
-		if (lineptr[num - 1] == '\n')
-			lineptr[num - 1] = '\0';
-		k = 0;
-		while (lineptr[k])
+		if (child_pid == 0)
 		{
-			if (lineptr[k] == '\0')
-				lineptr[k] = 0;
-			k++;
-		}
-		line = lineptr;
-
-		argv = tokenize(line, bufsize);
-		if (argv == NULL || argv[0] == NULL)
-		{
-			execute(argv);
+			execve(command, args, environ);
+			if (errno == EACCES)
+				ret = (create_error(args, 126));
+			free_env();
+			free_command(args, front);
+			free_alias_list(aliases);
+			_exit(ret);
 		}
 		else
 		{
-			k = search_builtin(argv[0]);
-			if (k >= 0)
-				exec_builtins(argv, k);
-			else
-			{
-				if (stat(argv[0], &fileinfo) != 0)
-					argv[0] = locate_command(argv[0]);
-				execute(argv);
-			}
-		
+			wait(&status);
+			ret = WEXITSTATUS(status);
 		}
-		free(argv);
-	
 	}
-	free(lineptr);
-       return (0);
+	if (flag)
+		free(command);
+	return (ret);
+}
+
+/**
+ *
+ */
+int main(int argc, char *argv[])
+{
+	int ret = 0, retn;
+	int *exe_ret = &retn;
+	char *prompt = ":)trukel$ ", *new_line = "\n";
+
+	name = argv[0];
+	hist = 1;
+	aliases = NULL;
+	signal(SIGINT, sig_handler);
+
+	*exe_ret = 0;
+	environ = _copyenv();
+	if (!environ)
+		exit(-100);
+
+	if (argc != 1)
+	{
+		ret = file_commands(argv[1], exe_ret);
+		free_env();
+		free_alias_list(aliases);
+		return (*exe_ret);
+	}
+
+	if (!isatty(STDIN_FILENO))
+	{
+		while (ret != END_OF_FILE && ret != EXIT)
+			ret = handle_args(exe_ret);
+		free_env();
+		free_alias_list(aliases);
+		return (*exe_ret);
+	}
+
+	while (1)
+	{
+		write(STDOUT_FILENO, prompt, 10);
+		ret = handle_args(exe_ret);
+		if (ret == END_OF_FILE || ret == EXIT)
+		{
+			if (ret == END_OF_FILE)
+				write(STDOUT_FILENO, new_line, 1);
+			free_env();
+			free_alias_list(aliases);
+			exit(*exe_ret);
+		}
+	}
+
+	free_env();
+	free_alias_list(aliases);
+	return (*exe_ret);
 }
